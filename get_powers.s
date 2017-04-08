@@ -10,7 +10,7 @@ push $3	#push our second argument (exponent)
 push $2	#push our first argument (base)
 call power	#call the function
 addl $8, %esp	# move the stack pointer back as we've used up our values
-push (%eax)	#push the value of %eax to the stack, which is the return value of the function
+pushl %eax	#push the value of %eax to the stack, which is the return value of the function
 
 #start with the second numbers
 push $2
@@ -19,7 +19,7 @@ call power
 addl $8, %esp
 
 #first answer already now on stack. Second is on eax, so we save first from stack into ebx
-pop (%ebx)
+popl %ebx
 
 addl %eax, %ebx	#we add thetwo values together, the result is in ebx
 movl $1, %eax 	#prepare for existing
@@ -29,7 +29,7 @@ int $0x80	#system call for exit; result in ebx
 .type power, @function
 power:
 
-push (%ebp)	#we save the old base pointer
+pushl %ebp	#we save the old base pointer
 movl %esp, %ebp	#we move the stack pointer to the base pointer
 subl $4, %esp	#get a word of storage for variables
 
@@ -50,5 +50,5 @@ jmp power_loop_start
 end_power:
 movl -4(%ebp), %eax	#return value goes to eax
 movl %ebp, %esp
-pop (%ebp)
+popl %ebp
 ret
